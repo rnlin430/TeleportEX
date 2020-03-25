@@ -1,0 +1,86 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+group = pluginGroup
+version = pluginVersion
+
+def pluginsPath = "G:\\minecraftserver\\EventServer1.13.2\\plugins"
+
+task showVersion {
+    doLast {
+        println version
+    }
+}
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+// sourceEncoding
+tasks.withType(AbstractCompile)*.options*.encoding = tasks.withType(GroovyCompile)*.groovyOptions*.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'spigotmc-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+        content {
+            includeGroup 'org.bukkit'
+            includeGroup 'org.spigotmc'
+        }
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+}
+
+task cleanLibs(type: Delete) {
+    println 'cleanLibsTask Start'
+    setDelete file("${buildDir}/libs").listFiles().findAll{it.name.endsWith(".jar")}
+    println 'cleanLibsTask End'
+}
+
+task updateDependency(type: Copy) {
+    println 'updateDependency Start'
+    from "${pluginsPath}"
+    into "lib/"
+    include "MamiyaFumin*.jar"
+    println 'updateDependency End'
+}
+
+task copyPluginToTestserver(dependsOn: ['build'], type: Copy) {
+    from "${buildDir}/libs"
+    into "${pluginsPath}"
+    include "*.jar"
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // The Spigot API with no shadowing. Requires the OSS repo.
+    compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
+    // The Bukkit API with no shadowing.
+    compileOnly 'org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT'
+    // The full Spigot server with no shadowing. Requires mavenLocal.
+    //compileOnly 'org.spigotmc:spigot:1.15.2-R0.1-SNAPSHOT'
+    // The full CraftBukkit server with no shadowing. Requires mavenLocal.
+    //compileOnly 'org.bukkit:craftbukkit:1.15.2-R0.1-SNAPSHOT'
+
+    // annotation// https://pleiades.io/help/idea/annotating-source-code.html
+    compile 'org.jetbrains:annotations:16.0.2'
+    compile fileTree(dir: 'lib', include: '*.jar')
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version]
+    }
+}
+
