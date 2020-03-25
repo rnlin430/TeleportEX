@@ -1,0 +1,49 @@
+name: TeleportEX
+version: 1.0.1-SNAPSHOT
+main: teleportex.teleport.TeleportPlugin
+api-version: 1.13
+author: rnlin
+
+
+commands:
+  extp:
+    description: It's main commands of this plugin.
+    aliases: [etp]
+    usage:
+      /<command>
+    permisson: extp.command.extp
+    permission-message: You don't have the permission <permission>.
+  regitem:
+    description: It's main commands of this plugin.
+    aliases: [ri]
+    usage:
+      /<command> <name>
+    permisson: extp.command.itemlist
+    permission-message: You don't have the permission <permission>.
+  itemlist:
+    description: It's main commands of this plugin.
+    aliases: [il,itemList]
+    usage:
+      /<command>
+    permisson: extp.command.itemlist
+    permission-message: You don't have the permission <permission>.
+  deleteitem:
+    description: It's main commands of this plugin.
+    aliases: [delitem]
+    usage:
+      /<command> <name>
+    permisson: extp.command.deleteitem
+    permission-message: You don't have the permission <permission>.
+permissions:
+  extp.command.extp:
+    description: extp command permission.
+    default: op
+  extp.command.regitem:
+    description: regitem command permission.
+    default: op
+  extp.command.itemlist:
+    description: itemlist command permission.
+    default: op
+  extp.command.deleteitem:
+    description: itemlist command permission.
+    default: op
