@@ -3,7 +3,6 @@ package com.github.rnlin.rnlibrary;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,10 +54,11 @@ public class CustomConfig {
                 new InputStreamReader(defConfigStream, StandardCharsets.UTF_8)));
     }
 
-    @NotNull
     public FileConfiguration getConfig() {
         if (config == null) {
             reloadConfig();
+        }
+        if (!(config == null)) {
         }
         return config;
     }

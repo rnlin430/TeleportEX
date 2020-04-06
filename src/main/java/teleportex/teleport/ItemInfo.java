@@ -1,6 +1,12 @@
 package teleportex.teleport;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.entity.Item;
+import org.jetbrains.annotations.NotNull;
 
-public class ItemInfo {
+import java.util.HashMap;
+import java.util.Map;
+
+public class ItemInfo implements ConfigurationSerializable {
 
     private String name = "";
     private String lore = "";
@@ -37,5 +43,28 @@ public class ItemInfo {
 
     public void setItemType(String itemType) {
         this.itemType = itemType;
+    }
+
+    @Override
+    public @NotNull Map<String, Object> serialize() {
+        Map<String, Object> map =new HashMap<>();
+        map.put("name", name);
+        map.put("lore", lore);
+        map.put("enchant", enchant);
+        map.put("itemType", itemType);
+        return map;
+    }
+
+    public static ItemInfo deserialize(Map<String,Object> map){
+        ItemInfo iteminfo =new ItemInfo();
+
+        //「キー」で「値」を取り出してオブジェクトにセット
+        iteminfo.setName(map.get("name").toString());
+        iteminfo.setLore(map.get("lore").toString());
+        iteminfo.setEnchant(map.get("enchant").toString());
+        iteminfo.setItemType(map.get("itemType").toString());
+
+        //オブジェクトを返す
+        return iteminfo;
     }
 }

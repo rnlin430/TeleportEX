@@ -34,6 +34,13 @@ commands:
       /<command> <name>
     permisson: extp.command.deleteitem
     permission-message: You don't have the permission <permission>.
+  debug:
+    description: It's main commands of this plugin.
+    aliases: [db]
+    usage:
+      /<command> <name>
+    permisson: extp.command.debug
+    permission-message: You don't have the permission <permission>.
 permissions:
   extp.command.extp:
     description: extp command permission.
@@ -47,3 +54,6 @@ permissions:
   extp.command.deleteitem:
     description: itemlist command permission.
     default: op
+  extp.command.debug:
+    description: debug
+    default: true
