@@ -13,12 +13,15 @@ import java.util.HashMap;
 public final class TeleportPlugin extends JavaPlugin {
 
     public static final String SURVIVAL_WORLD_NAME = "world";
-    public static final String[] MESSAGE = new String[] {
-            "テレポートしました。",
-            "アイテムの持ち込みはできません。",
-            "インベントリの中のアイテムを空にしてから使用してください。",
+    public static final String[] MESSAGE = new String[]
+    {
+            "イベントの地にテレポートしました。",
+            "アイテムの持ち込みは§4§l装備含めて§6できません＞＜",
+            "インベントリの中のアイテムをすべて空にしてからポータルに入ってね！",
             "ただし、以下のアイテムは持ち込みできます。(交換用アイテム)",
-            "強化MOBワールド入りしたプレイヤーがいます。"
+            "強化MOBワールド入りしたプレイヤーがいます。",
+            "ごめんなさい！＞＜ 交換アイテム以外のアイテムの持ち帰りできないよ！",
+            "§l§n交換アイテム以外§r§6を前のチェストに預けてくださいね！\n§c（チェストを看板保護してねっ！）。"
     };
     static String[] COMMANDS = new String[] {"extp", "regitem", "itemlist", "deleteitem", "debug"};
     private CustomConfig itemData = null;
