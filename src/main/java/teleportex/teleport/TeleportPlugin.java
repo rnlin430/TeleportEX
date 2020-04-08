@@ -4,18 +4,25 @@ import com.github.rnlin.rnlibrary.CustomConfig;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public final class TeleportPlugin extends JavaPlugin {
 
+    public static final String SURVIVAL_WORLD_NAME = "world";
+    public static final String[] MESSAGE = new String[] {
+            "テレポートしました。",
+            "アイテムの持ち込みはできません。",
+            "インベントリの中のアイテムを空にしてから使用してください。",
+            "ただし、以下のアイテムは持ち込みできます。(交換用アイテム)",
+            "強化MOBワールド入りしたプレイヤーがいます。"
+    };
     static String[] COMMANDS = new String[] {"extp", "regitem", "itemlist", "deleteitem", "debug"};
     private CustomConfig itemData = null;
+    public static final String EVENT_WORLD_NAME = "abc";
 
     @Override
     public void onEnable() {
@@ -93,4 +100,56 @@ public final class TeleportPlugin extends JavaPlugin {
     public boolean dispatchCommandByConsole(String command){
         return getServer().dispatchCommand(getServer().getConsoleSender(), command);
     }
+
+    public static boolean isEmptyInventory(@NotNull Player player) {
+        ItemStack[] armorers = player.getInventory().getArmorContents();
+        if (!isEmptyItemStacks(player, armorers)) return false;
+
+        ItemStack[] inventories = player.getInventory().getStorageContents();
+        if (!isEmptyItemStacks(player, inventories)) return false;
+
+        return true;
+    }
+
+    private static boolean isEmptyItemStacks(@NotNull Player player, @NotNull ItemStack[] itemStacks) {
+        int count = 0;
+        // ItemStack[] inventorylist = player.getInventory().getStorageContents();
+        int a = itemStacks.length;
+        for (ItemStack is : itemStacks) {
+            if (count == a - 1) break;
+            if (is == null) {
+                continue;
+            }
+            else { // アイテムが見つかった場合
+                boolean flag = false;
+                for (String key : MainCommand.itemInfoList.keySet()) {
+                    ItemInfo i = MainCommand.itemInfoList.get(key);
+                    String name = "";
+                    if (is.getItemMeta() != null) {name = is.getItemMeta().getDisplayName();}
+                    String lore = "";
+                    if (is.getItemMeta().getLore() != null ) {
+                        lore = is.getItemMeta().getLore().toString();
+                    }
+                    String enchant = "";
+                    is.getEnchantments();
+                    enchant = is.getEnchantments().toString();
+                    String itemType = "";
+                    is.getType();
+                    itemType = is.getType().toString();
+//System.out.println("\ni.getName()=\n" + i.getName() + "\nname=\n"  + name + "\ni.getLore()=\n" + i.getLore() + "\nlore=\n" + lore + "\ni.getEnchant()=\n" + i.getEnchant() + "\nenchant=\n" + enchant);
+                    if (((i.getName().equalsIgnoreCase(name) && i.getLore().equalsIgnoreCase(lore)) &&
+                            i.getEnchant().equalsIgnoreCase(enchant)) && i.getItemType().equalsIgnoreCase(itemType) ) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (flag) {
+                    continue;
+                }
+                return false;
+            }
+        }
+        return true;
+    }
 }
+
