@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -30,7 +29,6 @@ public class ActionListener implements Listener {
     private static final Map<String, Region> warpRegionMap      = new HashMap<>();
     private static final String[] DEATH_REGION_NAMES            = new String[]{"floor", "lv1", "lv2", "lv3", "lv4", "lv5"};
     private static final String[] WARP_REGION_NAMES             = new String[]{"floor-spawn", "spawn-floor"};
-    private static final BiFunction<String, Boolean, Boolean> existedPlayerInRegion = makeExistedPlayerInRegionFunc();
 
 
     public ActionListener(TeleportPlugin p ) {
@@ -50,40 +48,14 @@ public class ActionListener implements Listener {
         double z = p.getLocation().getZ();
         for (String s : warpRegionMap.keySet()) {
             if (warpRegionMap.get(s).contains(x, y, z)) {
+                // System.out.println("[:52] ");
                 if (warpRegionMap.get(s).getWorldName() == p.getWorld().getName()) {
-                    if (existedPlayerInRegion.apply(p.getName(), true)) {
-                    } else {
-                        Event event = new PlayerEnterWarpRegionEvent(p, p.getLocation(), s, warpRegionMap.get(s));
-                        Bukkit.getPluginManager().callEvent(event);
-                    }
-                } else {
-                    existedPlayerInRegion.apply(p.getName(), false);
+                    Event event = new PlayerEnterWarpRegionEvent(p, p.getLocation(), s, warpRegionMap.get(s));
+                    Bukkit.getPluginManager().callEvent(event);
+                    return;
                 }
-            } else {
-                existedPlayerInRegion.apply(p.getName(), false);
             }
         }
-    }
-
-    // This is closure to check that player was in the WARP-REGION just before.
-    private static BiFunction<String, Boolean, Boolean> makeExistedPlayerInRegionFunc() {
-        Map<String, Boolean> hashMap = new HashMap<>();
-        BiFunction<String, Boolean, Boolean> fc = (name, b) -> {
-            if (hashMap.containsKey(name)) {
-                if(!b) {
-                    hashMap.remove(name);
-                }
-                System.out.println("hashMap.containsKey(name)=true");
-                return true;
-            } else {
-                if(b) {
-                    hashMap.put(name, b);
-                }
-                System.out.println("hashMap.containsKey(name)=false");
-                return false;
-            }
-        };
-        return fc;
     }
 
     @EventHandler
@@ -94,14 +66,16 @@ public class ActionListener implements Listener {
             if (TeleportPlugin.isEmptyInventory(p)) {
                 plugin.dispatchCommandByOperator(p, "spawn");
             } else {
-                p.sendMessage(ChatColor.GOLD + TeleportPlugin.MESSAGE[1]);
-                p.sendMessage(ChatColor.GOLD + TeleportPlugin.MESSAGE[2]);
+                plugin.teleport(p, "abc", 13 , 28 , 113);
+                p.sendMessage(ChatColor.GOLD + TeleportPlugin.MESSAGE[5]);
+                p.sendMessage(ChatColor.GOLD + TeleportPlugin.MESSAGE[6]);
             }
             return;
         }else if (rname.equalsIgnoreCase(WARP_REGION_NAMES[1])) {
             if (TeleportPlugin.isEmptyInventory(p)) {
-                plugin.dispatchCommandByOperator(p, "spawn");
+                plugin.dispatchCommandByOperator(p, "mvtp abc");
             } else {
+                plugin.dispatchCommandByPlayer(p, "spawn");
                 p.sendMessage(ChatColor.GOLD + TeleportPlugin.MESSAGE[1]);
                 p.sendMessage(ChatColor.GOLD + TeleportPlugin.MESSAGE[2]);
             }
@@ -209,7 +183,7 @@ public class ActionListener implements Listener {
             );
             warpRegionMap.put(
                     WARP_REGION_NAMES[1],
-                    new Region(21D, 28D, 99D, 21D, 32D, 103D, Bukkit.getWorld(TeleportPlugin.SURVIVAL_WORLD_NAME))
+                    new Region(41D, 69D, 180D, 44D, 69D, 177D, Bukkit.getWorld(TeleportPlugin.SURVIVAL_WORLD_NAME))
             );
         } else {
             throw new NullPointerException("[" + TeleportPlugin.SURVIVAL_WORLD_NAME + "] が見つからなかったため領域を一部作成できませんでした。");
