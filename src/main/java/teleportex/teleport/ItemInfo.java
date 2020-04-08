@@ -64,7 +64,6 @@ public class ItemInfo implements ConfigurationSerializable {
         iteminfo.setEnchant(map.get("enchant").toString());
         iteminfo.setItemType(map.get("itemType").toString());
 
-        //オブジェクトを返す
         return iteminfo;
     }
 }
