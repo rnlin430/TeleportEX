@@ -1,5 +1,6 @@
 package teleportex.teleport;
 
+import com.github.rnlin.rnlibrary.ConsoleLog;
 import org.bukkit.World;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
@@ -38,5 +39,12 @@ public class Region extends BoundingBox {
     @NotNull
     public String getWorldName() {
         return this.world.getName();
+    }
+
+    public boolean contains(double x, double y, double z, @NotNull World world) {
+        if (this.world == world && super.contains(x, y, z)) {
+            return true;
+        }
+        return false;
     }
 }
