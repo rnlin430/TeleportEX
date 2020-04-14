@@ -18,45 +18,45 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 
-@SuppressWarnings("ALL")
+//@SuppressWarnings("ALL")
 public class MainCommand implements CommandExecutor {
 
     // static List<ItemInfo> itemInfoList = new ArrayList<>();
     public static HashMap<String, ItemInfo> itemInfoList = new HashMap<>();
     private TeleportPlugin plugin;
 
-
     public MainCommand(TeleportPlugin plugin) {
         this.plugin = plugin;
     }
+
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
 
         // extpコマンド
-        if(command.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[0])) {
+        if (cmd.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[0])) {
             if (sender instanceof BlockCommandSender) {
                 onExtpCommandBlock(sender);
                 return true;
             }
             if (!(sender instanceof Player)) return true;
             if (!sender.hasPermission("extp.command.extp")) {
-                sender.sendMessage(ChatColor.DARK_RED + command.getPermissionMessage());
+                sender.sendMessage(ChatColor.DARK_RED + cmd.getPermissionMessage());
                 return true;
             }
-            if     (args.length == 4) onExtpArg(sender, args);
-            else if(args.length == 0) onExtp(sender);
+            if (args.length == 4) onExtpArg(sender, args);
+            else if (args.length == 0) onExtp(sender);
             else return false;
             return true;
         }
 
         // regitemコマンド
-        if(command.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[1])) {
+        if (cmd.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[1])) {
             if (!(sender instanceof Player)) return true;
             if (!sender.hasPermission("extp.command.regitem")) {
-                sender.sendMessage(ChatColor.DARK_RED + command.getPermissionMessage());
+                sender.sendMessage(ChatColor.DARK_RED + cmd.getPermissionMessage());
                 return true;
             }
-            if(args.length == 1) {
+            if (args.length == 1) {
                 onRegitem(sender, args[0]);
             } else {
                 return false;
@@ -65,31 +65,43 @@ public class MainCommand implements CommandExecutor {
         }
 
         // itemlistコマンド
-        if(command.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[2])) {
+        if (cmd.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[2])) {
             if (!(sender instanceof Player)) return true;
-            if (!checkPermission(command, sender, "extp.command.itemlist")) return true;
+            if (!checkPermission(cmd, sender, "extp.command.itemlist")) return true;
             onItemlist(sender);
             return true;
         }
 
-        //deleteitemコマンド
-        if(command.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[3])) {
+        // deleteitemコマンド
+        if (cmd.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[3])) {
             if (!(sender instanceof Player)) return true;
-            if (!checkPermission(command, sender, "extp.command.deleteitem")) return true;
-            if(args.length == 1) {
+            if (!checkPermission(cmd, sender, "extp.command.deleteitem")) return true;
+            if (args.length == 1) {
                 onDeleteItem(args[0], sender);
             } else {
                 sender.sendMessage(ChatColor.RED + "登録アイテム名を指定してください。/deleteitem <登録名>");
             }
             return true;
         }
-        return false;
+
+        // debugコマンド
+        if (cmd.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[4])) {
+            Player p = (Player) sender;
+            TeleportPlugin.savePlayerInventory(p);
+        }
+
+        // debug2コマンド
+        if (cmd.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[5])) {
+            Player p = (Player) sender;
+            TeleportPlugin.restorePlayerInventory(p);
+        }
+       return false;
     }
 
 
-    //deleteitemコマンド処理
+    // deleteitemコマンド処理
     private void onDeleteItem(String key, CommandSender sender) {
-        if (itemInfoList.containsKey(key) == true){
+        if (itemInfoList.containsKey(key) == true) {
             itemInfoList.remove(key);
             plugin.getItemData().getConfig().set(key, null);
             plugin.getItemData().saveConfig();
@@ -110,7 +122,6 @@ public class MainCommand implements CommandExecutor {
         } else {
             sender.sendMessage(ChatColor.GOLD + TeleportPlugin.MESSAGE[1]);sender.sendMessage(ChatColor.GOLD + TeleportPlugin.MESSAGE[2]);
         }
-        return;
     }
 
     // extp(コマンドブロック)コマンド処理
@@ -119,7 +130,7 @@ public class MainCommand implements CommandExecutor {
         CommandBlock cb = (CommandBlock) bcs.getBlock();
         Location location = cb.getLocation();
         Player player = searchNearestPlayer(location);
-        if(player == null) {
+        if (player == null) {
            System.out.println("onExtpCommandBlock#player is null");
         }
         plugin.dispatchCommandByOperator(player, "/" + TeleportPlugin.COMMANDS[0]);
@@ -128,7 +139,7 @@ public class MainCommand implements CommandExecutor {
     @Nullable
     private Player searchNearestPlayer(@NotNull Location location) {
         World w = location.getWorld();
-        List<Player> playerList =  w.getPlayers();
+        List<Player> playerList =  Objects.requireNonNull(w, "MainCommand#searchNearestPlayer(Location...)#w = null:167").getPlayers();
         HashMap<Player, Double> d = new HashMap<>();
         for (Player p : playerList) {
             Double distance = p.getLocation().distanceSquared(location);
@@ -201,8 +212,7 @@ public class MainCommand implements CommandExecutor {
     // itemlistコマンド
     private void onItemlist(CommandSender sender) {
         sender.sendMessage(ChatColor.BOLD + "" + ChatColor.GRAY + "登録アイテムリスト");
-        for (String i : itemInfoList.keySet())
-        {
+        for (String i : itemInfoList.keySet()) {
             sender.sendMessage(ChatColor.BOLD + "・" + ChatColor.GOLD + i);
         }
     }

@@ -1,5 +1,6 @@
 package com.github.rnlin.rnlibrary;
 
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,17 +15,31 @@ public class ConsoleLog {
     static final String end    = "\u001b[00m";
 
     private static String pluginName = null;
+    private static boolean enableMessage = true;
 
     public static void writeLine(@Nullable String text) {
+        if (!enableMessage) return;
         System.out.println(pluginName + end + text + end); }
+
     public static void sendCaution(@Nullable String text) {
-        System.out.println("[" + pluginName + ":Caution] " + yellow + text + end); }
+        if (!enableMessage) return;
+        System.out.println("[" + pluginName + ":Caution] " + yellow + text + end);
+    }
+
     public static void sendWarning(@Nullable String text) {
-        System.out.println("[" + pluginName + ":Warming] " + red + text + end); }
+        if (!enableMessage) return;
+        System.out.println("[" + pluginName + ":Warming] " + red + text + end);
+    }
+
     public static void sendDescription(@Nullable String text) {
-        System.out.println("[" + pluginName + ":info] " + cyan + text + end); }
+        if (!enableMessage) return;
+        System.out.println("[" + pluginName + ":info] " + cyan + text + end);
+    }
+
     public static void sendDebugMessage(@Nullable String text) {
-        System.out.println("[" + pluginName + ":Debug] " + pink + text + end); }
+        if (!enableMessage) return;
+        System.out.println("[" + pluginName + ":Debug] " + pink + text + end);
+    }
 
     public static void setPluginName(String name) {
         pluginName = name;

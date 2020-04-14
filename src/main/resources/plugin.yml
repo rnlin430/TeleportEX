@@ -41,6 +41,13 @@ commands:
       /<command> <name>
     permisson: extp.command.debug
     permission-message: You don't have the permission <permission>.
+  debug2:
+    description: It's main commands of this plugin.
+    aliases: [db2]
+    usage:
+      /<command> <name>
+    permisson: extp.command.debug2
+    permission-message: You don't have the permission <permission>.
 permissions:
   extp.command.extp:
     description: extp command permission.
@@ -56,4 +63,7 @@ permissions:
     default: op
   extp.command.debug:
     description: debug
-    default: true
+    default: op
+  extp.command.debug2:
+    description: debug2
+    default: op

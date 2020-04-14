@@ -24,6 +24,10 @@ public class PlayersData extends CustomConfig{
         return getConfig().getBoolean(uuid.toString() + "." + key);
     }
 
+//    public boolean getLocation(UUID uuid, String key) {
+//       return getConfig().getItemStack() getBoolean(uuid.toString() + "." + key);
+//    }
+
     public boolean contains(UUID uuid, String key) {
         return getConfig().contains(uuid.toString() + "." + key);
     }
