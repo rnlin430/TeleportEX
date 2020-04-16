@@ -24,7 +24,7 @@ public final class TeleportPlugin extends JavaPlugin {
         "インベントリの中のアイテムをすべて空にしてからポータルに入ってね！",
         "ただし、以下のアイテムは持ち込みできます。(交換用アイテム)",
         "強化MOBワールド入りしたプレイヤーがいます。",
-        "ごめんなさい！＞＜ 交換アイテム以外のアイテムの持ち帰りできないよ！",
+        "ごめんなさい！! 景品交換アイテム以外のアイテムの持ち帰りできないよ！",
         "§l§n交換アイテム以外§r§6を前のチェストに預けてくださいね！\n§c（チェストを看板保護してねっ！）。"
     };
     static String[] COMMANDS = new String[] {"extp", "regitem", "itemlist", "deleteitem", "debug", "debug2"};
@@ -117,13 +117,23 @@ public final class TeleportPlugin extends JavaPlugin {
         return playerData;
     }
 
-    public void teleport(Player player, String worldName, int x, int y, int z) {
+    public void teleport(Player player, String worldName, final double x, final double y, final double z) {
         World world = this.getServer().getWorld(worldName);
         if(world == null) {
             System.out.println("World " + worldName + " is invalid!");
             return;
         }
         Location loc = new Location(world, x, y, z);
+        player.teleport(loc);
+    }
+
+    public void teleport(Player player, String worldName, final double x, final double y, final double z, final float yaw, final float pitch) {
+        World world = this.getServer().getWorld(worldName);
+        if(world == null) {
+            System.out.println("World " + worldName + " is invalid!");
+            return;
+        }
+        Location loc = new Location(world, x, y, z, yaw, pitch);
         player.teleport(loc);
     }
 
@@ -235,10 +245,10 @@ public final class TeleportPlugin extends JavaPlugin {
         inst.getInventoryData().reloadConfig();
         String uuid = p.getUniqueId().toString();
         String errormsg = p.getPlayerListName() + "の装備アイテムデータが見つかりませんでした。";
-        for (String StrageNumber : Objects.requireNonNull(
+        for (String slotnum : Objects.requireNonNull(
                 inst.getInventoryData().getConfig().getConfigurationSection(uuid), YML_FILE_NAMES[1] + ":" +  errormsg).getKeys(false)) {
-            ItemStack is = inst.getInventoryData().getConfig().getItemStack(uuid + "." + StrageNumber);
-            items[Integer.valueOf(StrageNumber)] = is;
+            ItemStack is = inst.getInventoryData().getConfig().getItemStack(uuid + "." + slotnum);
+            items[Integer.valueOf(slotnum)] = is;
         }
 
         p.getInventory().setStorageContents(items);
@@ -246,14 +256,14 @@ public final class TeleportPlugin extends JavaPlugin {
         items = new ItemStack[4];
         ItemStack[] offhand = new ItemStack[1];
         inst.getInventoryData().reloadConfig();
-        for (String StrageNumber : Objects.requireNonNull(
+        for (String slotnum : Objects.requireNonNull(
                 inst.getArmorData().getConfig().getConfigurationSection(uuid), YML_FILE_NAMES[2] + ":" + errormsg).getKeys(false)) {
-            if (StrageNumber.equalsIgnoreCase("offhand")) {
-                offhand[0] = inst.getArmorData().getConfig().getItemStack(uuid + "." + StrageNumber);
+            if (slotnum.equalsIgnoreCase("offhand")) {
+                offhand[0] = inst.getArmorData().getConfig().getItemStack(uuid + "." + slotnum);
                 continue;
             }
-            ItemStack is = inst.getArmorData().getConfig().getItemStack(uuid + "." + StrageNumber);
-            items[Integer.valueOf(StrageNumber)] = is;
+            ItemStack is = inst.getArmorData().getConfig().getItemStack(uuid + "." + slotnum);
+            items[Integer.valueOf(slotnum)] = is;
         }
         p.getInventory().setArmorContents(items);
         p.getInventory().setExtraContents(offhand);
