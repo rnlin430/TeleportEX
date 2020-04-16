@@ -64,14 +64,14 @@ public class ActionListener implements Listener {
             if (TeleportPlugin.isEmptyInventory(p)) {
                 plugin.dispatchCommandByOperator(p, "spawn");
             } else {
-                plugin.teleport(p, "abc", 13 , 28 , 113);
+                plugin.teleport(p, "abc", 13D , 28D , 113D);
                 p.sendMessage(ChatColor.GOLD + TeleportPlugin.MESSAGE[5]);
                 p.sendMessage(ChatColor.GOLD + TeleportPlugin.MESSAGE[6]);
             }
             return;
         }else if (rname.equalsIgnoreCase(WARP_REGION_NAMES[1])) {
             if (TeleportPlugin.isEmptyInventory(p)) {
-                plugin.dispatchCommandByOperator(p, "mvtp abc");
+                plugin.teleport(p, "abc", 12.5D, 240D, 106.5D, 90F, 90F);
             } else {
                 plugin.dispatchCommandByOperator(p, "spawn");
                 p.sendMessage(ChatColor.GOLD + TeleportPlugin.MESSAGE[1]);
@@ -144,19 +144,19 @@ public class ActionListener implements Listener {
                     return;
                 } else if (s.equalsIgnoreCase(DEATH_REGION_NAMES[3])) {
                     ConsoleLog.sendDebugMessage("onPlayerRespawn#if (...DEATH_REGION_NAMES[3])");
-                    e.setRespawnLocation(new Location(ew, 12D, 28D, 106D, 90F, 0F));
+                    e.setRespawnLocation(new Location(ew, -238.5D, 30D, 101.5D, 90F, 0F));
                     return;
                 } else if (s.equalsIgnoreCase(DEATH_REGION_NAMES[4])) {
                     ConsoleLog.sendDebugMessage("onPlayerRespawn#if (...DEATH_REGION_NAMES[4])");
-                    e.setRespawnLocation(new Location(ew, 12D, 28D, 106D, 90F, 0F));
+                    e.setRespawnLocation(new Location(ew, -266.5D, 21D, 192.5D, 0F, 0F));
                     return;
                 } else if (s.equalsIgnoreCase(DEATH_REGION_NAMES[5])) {
                     ConsoleLog.sendDebugMessage("onPlayerRespawn#if (...DEATH_REGION_NAMES[5])");
-                    e.setRespawnLocation(new Location(ew, 12D, 28D, 106D, 90F, 78.3F));
+                    e.setRespawnLocation(new Location(ew, -167.5D, 6D, -61.5D, 180F, 0F));
                     return;
                 } else if (s.equalsIgnoreCase(DEATH_REGION_NAMES[6])) {
                     ConsoleLog.sendDebugMessage("onPlayerRespawn#if (...DEATH_REGION_NAMES[6])");
-                    e.setRespawnLocation(new Location(bw, 12.5D, 28D, 106.5D, 90F, 78.3F));
+                    e.setRespawnLocation(new Location(ew, 12.5D, 28D, 106.5D, 90F, 78.3F));
                     return;
                 }
             }
@@ -179,9 +179,12 @@ public class ActionListener implements Listener {
     @EventHandler
     public void onPlayerLogout(PlayerQuitEvent e) {
         Player p = e.getPlayer();
-        ConsoleLog.sendDebugMessage("onPlayerLogout:146");
-        if (p.getWorld().getName().equalsIgnoreCase(TeleportPlugin.EVENT_WORLD_NAME)) {
-            ConsoleLog.sendDebugMessage("onPlayerLogout#if(p.getWorld().getName()...):150");
+ConsoleLog.sendDebugMessage("onPlayerLogout:182");
+        boolean b = false;
+        b |= p.getWorld().getName().equalsIgnoreCase(TeleportPlugin.EVENT_WORLD_NAME);
+        b |= p.getWorld().getName().equalsIgnoreCase(TeleportPlugin.BOSS_WORLD_NAME);
+        if (b) {
+ConsoleLog.sendDebugMessage("onPlayerLogout#if(b):187");
             plugin.getPlayerData().getConfig().set(p.getUniqueId() + ".LOCATION" , p.getLocation());
             plugin.getPlayerData().getConfig().set(p.getUniqueId() + ".GAME" , true);
             plugin.getPlayerData().saveConfig();
@@ -189,7 +192,7 @@ public class ActionListener implements Listener {
             p.getInventory().setStorageContents(new ItemStack[36]);
             plugin.dispatchCommandByOperator(p, "spawn");
         } else {
-            ConsoleLog.sendDebugMessage("onPlayerLogout#else:155");
+ConsoleLog.sendDebugMessage("onPlayerLogout#else:155");
             plugin.getPlayerData().getConfig().set(p.getUniqueId() + ".GAME" , false);
             plugin.getPlayerData().saveConfig();
         }
@@ -198,6 +201,10 @@ public class ActionListener implements Listener {
     @EventHandler
     public void onPlayerAccess(AsyncPlayerPreLoginEvent e) {
         if (initFlag) {
+            boolean b = false;
+            b |= plugin.getServer().getWorld(TeleportPlugin.BOSS_WORLD_NAME) == null;
+            b |= plugin.getServer().getWorld(TeleportPlugin.EVENT_WORLD_NAME) == null;
+            if (b) return;
 //System.out.println("onPlayerAccess#if(initFlag)");
             plugin.getPlayerData().saveDefaultConfig();
             plugin.getPlayerData().saveConfig();
@@ -209,6 +216,10 @@ public class ActionListener implements Listener {
     @EventHandler
     public void onEnnablePlugin(PluginEnableEvent e) {
         if (initFlag) {
+            boolean b = false;
+            b |= plugin.getServer().getWorld(TeleportPlugin.BOSS_WORLD_NAME) == null;
+            b |= plugin.getServer().getWorld(TeleportPlugin.EVENT_WORLD_NAME) == null;
+            if (b) return;
 //System.out.println("onEnnablePlugin#if(initFlag)");
             plugin.getPlayerData().saveDefaultConfig();
             plugin.getPlayerData().saveConfig();
@@ -225,7 +236,7 @@ public class ActionListener implements Listener {
         FileConfiguration cf = plugin.getPlayerData().getConfig();
         if (!cf.contains(p.getUniqueId() + ".GAME")) return;
         if (!cf.contains(p.getUniqueId() + ".LOCATION")) return;
-        ConsoleLog.sendDebugMessage("onPlayerLogin#if(!cf.contains(p.getUniqueId() + \".LOCATION\"))");
+        ConsoleLog.sendDebugMessage("onPlayerLogin#if(!cf.contains...):231");
         if (cf.getBoolean(p.getUniqueId() + ".GAME")) {
 //            System.out.println("####" + cf.get(p.getUniqueId() + ".LOCATION"));
 //            System.out.println("getClass().getName()" + cf.get(p.getUniqueId() + ".LOCATION").getClass().getName());
@@ -284,19 +295,19 @@ public class ActionListener implements Listener {
             );
             deathRegionMap.put(
                     DEATH_REGION_NAMES[2],
-                    new Region(-12D, 4D, 149D, -115D, 26D, 54D, Bukkit.getWorld(TeleportPlugin.EVENT_WORLD_NAME))
+                    new Region(-163D, 3D, 151D, -12D, 26D, 54D, Bukkit.getWorld(TeleportPlugin.EVENT_WORLD_NAME))
             );
             deathRegionMap.put(
                     DEATH_REGION_NAMES[3],
-                    new Region(-261D, 26D, 148, -398D, 46D, 34D, Bukkit.getWorld(TeleportPlugin.EVENT_WORLD_NAME))
+                    new Region(-223D, 22D, 152D, -398D, 46D, 34D, Bukkit.getWorld(TeleportPlugin.EVENT_WORLD_NAME))
             );
             deathRegionMap.put(
                     DEATH_REGION_NAMES[4],
-                    new Region(0D, 0D, 0D, -0D, 0D, 0D, Bukkit.getWorld(TeleportPlugin.EVENT_WORLD_NAME))
+                    new Region(-319D, 35D, 174D, -156D, 3D, 351D, Bukkit.getWorld(TeleportPlugin.EVENT_WORLD_NAME))
             );
             deathRegionMap.put(
                     DEATH_REGION_NAMES[5],
-                    new Region(0D, 0D, 0D, 0D, 0D, 0D, Bukkit.getWorld(TeleportPlugin.EVENT_WORLD_NAME))
+                    new Region(-60D, 3D, -39D, -242D, 55D, -212D, Bukkit.getWorld(TeleportPlugin.EVENT_WORLD_NAME))
             );
             deathRegionMap.put(
                     DEATH_REGION_NAMES[6],
@@ -313,7 +324,7 @@ public class ActionListener implements Listener {
             );
             warpRegionMap.put(
                     WARP_REGION_NAMES[1],
-                    new Region(41D, 69D, 180D, 44D, 69D, 177D, Bukkit.getWorld(TeleportPlugin.SURVIVAL_WORLD_NAME))
+                    new Region(14993, 61D, -14993D, 14997D, 58D, -14989D, Bukkit.getWorld(TeleportPlugin.SURVIVAL_WORLD_NAME))
             );
         } else {
             throw new NullPointerException("[" + TeleportPlugin.SURVIVAL_WORLD_NAME + "] が見つからなかったため領域を一部作成できませんでした。");

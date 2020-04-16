@@ -48,10 +48,17 @@ commands:
       /<command> <name>
     permisson: extp.command.debug2
     permission-message: You don't have the permission <permission>.
+  restore:
+    description: It's main commands of this plugin.
+    aliases: [db2]
+    usage:
+      /<command> <name>
+    permisson: extp.command.debug2
+    permission-message: You don't have the permission <permission>.
 permissions:
   extp.command.extp:
     description: extp command permission.
-    default: op
+    default: default
   extp.command.regitem:
     description: regitem command permission.
     default: op
