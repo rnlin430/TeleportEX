@@ -22,18 +22,20 @@ public final class TeleportPlugin extends JavaPlugin {
         "イベントの地にテレポートしました。",
         "アイテムの持ち込みは§4§l装備含めて§6できません＞＜",
         "インベントリの中のアイテムをすべて空にしてからポータルに入ってね！",
-        "ただし、以下のアイテムは持ち込みできます。(交換用アイテム)",
+        "ただし、交換用アイテムは持ち帰りできます",
         "強化MOBワールド入りしたプレイヤーがいます。",
-        "ごめんなさい！! 景品交換アイテム以外のアイテムの持ち帰りできないよ！",
-        "§l§n交換アイテム以外§r§6を前のチェストに預けてくださいね！\n§c（チェストを看板保護してねっ！）。"
+        "アイテムを持ったままゲートを通り抜けられません...;;",
+        "§l§n交換アイテム以外§r§6を前のチェストに預けてください！\n§c（チェストを看板保護してね！）。",
+            "§7異世界では経験値とアイテムはなくなりません。"
     };
-    static String[] COMMANDS = new String[] {"extp", "regitem", "itemlist", "deleteitem", "debug", "debug2"};
-    private static final String[] YML_FILE_NAMES = {"items.yml", "player.inv.yml", "player.armor.yml", "player.yml"};
+    static String[] COMMANDS = new String[] {"extp", "regitem", "itemlist", "deleteitem", "debug", "debug2", "restore", "lore", "deleteplayerinventory"};
+    private static final String[] YML_FILE_NAMES = {"items.yml", "player.inv.yml", "player.armor.yml", "player.yml", "player.status.yml"};
     private CustomConfig itemData = null;
     public static final String EVENT_WORLD_NAME = "abc";
     public static final String BOSS_WORLD_NAME = "boss";
     private CustomConfig inventoryData = null;
     private CustomConfig armorData = null;
+    private CustomConfig playerStatusData = null;
     private static TeleportPlugin instance;
     private static CustomConfig playerData = null;
     public static TeleportPlugin getInstance() {
@@ -70,6 +72,9 @@ public final class TeleportPlugin extends JavaPlugin {
         armorData.saveDefaultConfig();
         armorData.reloadConfig();
         playerData = new CustomConfig(this, YML_FILE_NAMES[3]);
+        armorData = new CustomConfig(this, YML_FILE_NAMES[4]);
+        armorData.saveDefaultConfig();
+        armorData.reloadConfig();
 
     }
 
@@ -267,6 +272,10 @@ public final class TeleportPlugin extends JavaPlugin {
         }
         p.getInventory().setArmorContents(items);
         p.getInventory().setExtraContents(offhand);
+    }
+
+    public CustomConfig getPlayerStatusData() {
+        return playerStatusData;
     }
 }
 

@@ -6,11 +6,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -164,6 +166,60 @@ public class ActionListener implements Listener {
         e.setRespawnLocation(new Location(ew, 12D, 28D, 106D, 90F, 0F));
     }
 
+    @EventHandler
+    public void onEntityTeleport(EntityTeleportEvent e) {
+        Entity entity = e.getEntity();
+        if (!(entity instanceof Player)) return;
+        Player p = (Player) entity;
+
+        World ew = Objects.requireNonNull(
+                plugin.getServer().getWorld(TeleportPlugin.EVENT_WORLD_NAME), "onEntityTeleport" + WORLD_ERROR_MESSAGE);
+        World bw = Objects.requireNonNull(
+                plugin.getServer().getWorld(TeleportPlugin.BOSS_WORLD_NAME), "onEntityTeleport" + WORLD_ERROR_MESSAGE);
+
+        boolean b = false;
+        b |= p.getWorld() == ew;
+        b |= p.getPlayer().getWorld() == bw;
+        if (!b) return;
+
+        for (String s : deathRegionMap.keySet()) {
+            if (
+                    deathRegionMap.get(s).contains(
+                            p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), p.getWorld()
+                    )
+            ) {
+                ConsoleLog.sendDebugMessage("onEntityTeleport#if (deathRegionMap.get(s).contains(x, y, z))");
+                if (s.equalsIgnoreCase(DEATH_REGION_NAMES[1])) {
+                    ConsoleLog.sendDebugMessage("onEntityTeleport#if (...DEATH_REGION_NAMES[1])");
+                    plugin.getPlayerStatusData().getConfig().set(p.getUniqueId().toString() + "." + "1", true);
+                    return;
+                } else if (s.equalsIgnoreCase(DEATH_REGION_NAMES[2])) {
+                    ConsoleLog.sendDebugMessage("onEntityTeleport#if (...DEATH_REGION_NAMES[2])");
+                    plugin.getPlayerStatusData().getConfig().set(p.getUniqueId().toString() + "." + "2", true);
+                    return;
+                } else if (s.equalsIgnoreCase(DEATH_REGION_NAMES[3])) {
+                    ConsoleLog.sendDebugMessage("onEntityTeleport#if (...DEATH_REGION_NAMES[3])");
+                    plugin.getPlayerStatusData().getConfig().set(p.getUniqueId().toString() + "." + "3", true);
+                    return;
+                } else if (s.equalsIgnoreCase(DEATH_REGION_NAMES[4])) {
+                    ConsoleLog.sendDebugMessage("onEntityTeleport#if (...DEATH_REGION_NAMES[4])");
+                    plugin.getPlayerStatusData().getConfig().set(p.getUniqueId().toString() + "." + "4", true);
+                    return;
+                } else if (s.equalsIgnoreCase(DEATH_REGION_NAMES[5])) {
+                    ConsoleLog.sendDebugMessage("onEntityTeleport#if (...DEATH_REGION_NAMES[5])");
+                    plugin.getPlayerStatusData().getConfig().set(p.getUniqueId().toString() + "." + "5", true);
+                    return;
+                } else if (s.equalsIgnoreCase(DEATH_REGION_NAMES[6])) {
+                    ConsoleLog.sendDebugMessage("onEntityTeleport#if (...DEATH_REGION_NAMES[6])");
+                    plugin.getPlayerStatusData().getConfig().set(p.getUniqueId().toString() + "." + "boss", true);
+                    return;
+                }
+                plugin.getPlayerStatusData().saveConfig();
+            }
+        }
+
+    }
+
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerDeath(PlayerDeathEvent e) {
         Player p = e.getEntity();
@@ -173,6 +229,7 @@ public class ActionListener implements Listener {
         b |= p.getWorld() == ew;
         b |= p.getWorld() == bw;
         if (!b) return;
+        p.sendMessage(TeleportPlugin.MESSAGE[7]);
         e.setKeepInventory(true);e.setKeepLevel(true);
     }
 
@@ -190,6 +247,8 @@ ConsoleLog.sendDebugMessage("onPlayerLogout#if(b):187");
             plugin.getPlayerData().saveConfig();
             TeleportPlugin.savePlayerInventory(p);
             p.getInventory().setStorageContents(new ItemStack[36]);
+            p.getInventory().setArmorContents(new ItemStack[4]);
+            p.getInventory().setExtraContents(new ItemStack[1]);
             plugin.dispatchCommandByOperator(p, "spawn");
         } else {
 ConsoleLog.sendDebugMessage("onPlayerLogout#else:155");
