@@ -50,15 +50,29 @@ commands:
     permission-message: You don't have the permission <permission>.
   restore:
     description: It's main commands of this plugin.
-    aliases: [db2]
+    aliases: [rt]
     usage:
       /<command> <name>
-    permisson: extp.command.debug2
+    permisson: extp.command.restore
+    permission-message: You don't have the permission <permission>.
+  lore:
+    description: It's main commands of this plugin.
+    aliases: [lo]
+    usage:
+      /<command> <name>
+    permisson: extp.command.lore
+    permission-message: You don't have the permission <permission>.
+  deleteplayerinventory:
+    description: It's main commands of this plugin.
+    aliases: [dpi]
+    usage:
+      /<command> [PlayerName|all]
+    permisson: extp.command.delete
     permission-message: You don't have the permission <permission>.
 permissions:
   extp.command.extp:
     description: extp command permission.
-    default: default
+    default: true
   extp.command.regitem:
     description: regitem command permission.
     default: op
@@ -66,11 +80,20 @@ permissions:
     description: itemlist command permission.
     default: op
   extp.command.deleteitem:
-    description: itemlist command permission.
+    description: deleteitem command permission.
     default: op
   extp.command.debug:
-    description: debug
+    description: debug command permission.
     default: op
   extp.command.debug2:
-    description: debug2
+    description: debug2 command permission.
+    default: op
+  extp.command.restore:
+    description: restore command permission.
+    default: op
+  extp.command.lore:
+    description: lore command permission.
+    default: op
+  extp.command.delete:
+    description: delete command permission.
     default: op

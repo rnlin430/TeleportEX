@@ -1,16 +1,15 @@
 package teleportex.teleport;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -88,14 +87,81 @@ public class MainCommand implements CommandExecutor {
         if (cmd.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[4])) {
             Player p = (Player) sender;
             TeleportPlugin.savePlayerInventory(p);
+            return true;
         }
 
         // debug2コマンド
         if (cmd.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[5])) {
             Player p = (Player) sender;
-            TeleportPlugin.restorePlayerInventory(p);
+            if (args.length == 1) {
+                TeleportPlugin.restorePlayerInventory(plugin.getServer().getPlayer(args[0]));
+                p.sendMessage("復元が終わりました。");
+            }
+            return true;
         }
-       return false;
+
+        // restoreコマンド
+        if (cmd.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[6])) {
+            Player p = (Player) sender;
+            if (args.length == 1) {
+                TeleportPlugin.restorePlayerInventory(plugin.getServer().getPlayer(args[0]));
+                p.sendMessage("復元が終わりました。");
+            }
+            return true;
+        }
+
+        // loreコマンド
+        if (cmd.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[7])) {
+            // System.out.println(" if (cmd.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[7])) {");
+            //args[0].get
+            if (!(sender instanceof Player)) return true;
+            Player p = (Player) sender;
+            if (args.length == 0) {
+                p.sendMessage("§8引数を指定してください。 §3usage:/lore [説明文1行目] [説明文2行目]...");
+                return true;
+            }
+            List<String> list = new ArrayList<>();
+            for (int i = 0; i < args.length; i++) {
+                String lore = args[i].replace("&", "§");
+                list.add(lore);
+            }
+            ItemStack is = p.getInventory().getItemInMainHand();
+            ItemMeta im = is.getItemMeta();
+            if (im == null) {
+                p.sendMessage("§4何もアイテムを持っていません。\n説明をつけたいアイテムを選んで");
+                return true;
+            }
+            im.setLore(list);
+            is.setItemMeta(im);
+
+            return true;
+        }
+
+        // deleteplayerinventory コマンド
+        if (cmd.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[8])) {
+            if (args[0] == "all") {
+                int count = 0;
+                for (String s : plugin.getInventoryData().getConfig().getKeys(false)) {
+                    plugin.getInventoryData().getConfig().set(s, null);
+                    sender.sendMessage(s);
+                    ++count;
+                }
+                for (String s : plugin.getArmorData().getConfig().getKeys(false)) {
+                    plugin.getInventoryData().getConfig().set(s, null);
+                }
+                plugin.getInventoryData().saveConfig();
+                sender.sendMessage("§7すべてのプレイヤーのアイテムデータが削除されました。\n作除数: " + count);
+            } else {
+                Player p = plugin.getServer().getPlayer(args[0]);
+                String u = p.getUniqueId().toString();
+                plugin.getInventoryData().getConfig().set(u, null);
+                plugin.getInventoryData().getConfig().set(u, null);
+                plugin.getInventoryData().saveConfig();
+                sender.sendMessage("§7アイテムデータが削除されました。");
+            }
+            return true;
+        }
+        return false;
     }
 
 
