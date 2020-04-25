@@ -230,31 +230,14 @@ public class ActionListener implements Listener {
         b |= p.getWorld() == bw;
         if (!b) return;
         p.sendMessage(TeleportPlugin.MESSAGE[7]);
-        e.setKeepInventory(true);e.setKeepLevel(true);
+        //e.setKeepLevel(true);
+        //e.setKeepInventory(true);
     }
 
     @EventHandler
     public void onPlayerLogout(PlayerQuitEvent e) {
         Player p = e.getPlayer();
-ConsoleLog.sendDebugMessage("onPlayerLogout:182");
-        boolean b = false;
-        b |= p.getWorld().getName().equalsIgnoreCase(TeleportPlugin.EVENT_WORLD_NAME);
-        b |= p.getWorld().getName().equalsIgnoreCase(TeleportPlugin.BOSS_WORLD_NAME);
-        if (b) {
-ConsoleLog.sendDebugMessage("onPlayerLogout#if(b):187");
-            plugin.getPlayerData().getConfig().set(p.getUniqueId() + ".LOCATION" , p.getLocation());
-            plugin.getPlayerData().getConfig().set(p.getUniqueId() + ".GAME" , true);
-            plugin.getPlayerData().saveConfig();
-            TeleportPlugin.savePlayerInventory(p);
-            p.getInventory().setStorageContents(new ItemStack[36]);
-            p.getInventory().setArmorContents(new ItemStack[4]);
-            p.getInventory().setExtraContents(new ItemStack[1]);
-            plugin.dispatchCommandByOperator(p, "spawn");
-        } else {
-ConsoleLog.sendDebugMessage("onPlayerLogout#else:155");
-            plugin.getPlayerData().getConfig().set(p.getUniqueId() + ".GAME" , false);
-            plugin.getPlayerData().saveConfig();
-        }
+        TeleportPlugin.playerLogoutProcess(p);
     }
 
     @EventHandler

@@ -2,12 +2,15 @@ package teleportex.teleport;
 
 import com.github.rnlin.rnlibrary.ConsoleLog;
 import com.github.rnlin.rnlibrary.CustomConfig;
+import com.github.rnlin.rnlibrary.PlayerMessage;
 import com.github.rnlin.rnlibrary.PlayersData;
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -38,6 +41,7 @@ public final class TeleportPlugin extends JavaPlugin {
     private CustomConfig playerStatusData = null;
     private static TeleportPlugin instance;
     private static CustomConfig playerData = null;
+    private static long saveTimerTick = 20*60*1;
     public static TeleportPlugin getInstance() {
         return instance;
     }
@@ -59,6 +63,17 @@ public final class TeleportPlugin extends JavaPlugin {
         }
 
         new ActionListener(this);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                sendToPlayerMessage("rmlin", "Start AutoSave");
+                ConsoleLog.sendDescription("Start AutoSave");
+                allOnlinePlayersDataSave();
+                ConsoleLog.sendDescription("AutoSaveComplete.");
+                sendToPlayerMessage("rmlin", "AutoSave Complete");
+            }
+        }.runTaskTimer(this, saveTimerTick, saveTimerTick);
     }
 
     private void initConfig() {
@@ -80,6 +95,9 @@ public final class TeleportPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        getPlayerData().saveConfig();
+        getArmorData().saveConfig();
+        getInventoryData().saveConfig();
         // Plugin shutdown logic
     }
 
@@ -246,10 +264,13 @@ public final class TeleportPlugin extends JavaPlugin {
 
     public static void restorePlayerInventory(@NotNull Player p) {
         ItemStack[] items = new ItemStack[36];
-        TeleportPlugin inst = TeleportPlugin.getInstance();
+        TeleportPlugin inst = getInstance();
         inst.getInventoryData().reloadConfig();
         String uuid = p.getUniqueId().toString();
         String errormsg = p.getPlayerListName() + "の装備アイテムデータが見つかりませんでした。";
+        if (inst.getInventoryData().getConfig().getConfigurationSection(uuid) == null) {
+            sendToPlayerMessage("rmlin", p.getName() + YML_FILE_NAMES[1] + ":" + errormsg);
+        }
         for (String slotnum : Objects.requireNonNull(
                 inst.getInventoryData().getConfig().getConfigurationSection(uuid), YML_FILE_NAMES[1] + ":" +  errormsg).getKeys(false)) {
             ItemStack is = inst.getInventoryData().getConfig().getItemStack(uuid + "." + slotnum);
@@ -261,6 +282,9 @@ public final class TeleportPlugin extends JavaPlugin {
         items = new ItemStack[4];
         ItemStack[] offhand = new ItemStack[1];
         inst.getInventoryData().reloadConfig();
+        if (inst.getArmorData().getConfig().getConfigurationSection(uuid) == null) {
+            sendToPlayerMessage("rmlin", p.getName() + YML_FILE_NAMES[2] + ":" + errormsg);
+        }
         for (String slotnum : Objects.requireNonNull(
                 inst.getArmorData().getConfig().getConfigurationSection(uuid), YML_FILE_NAMES[2] + ":" + errormsg).getKeys(false)) {
             if (slotnum.equalsIgnoreCase("offhand")) {
@@ -276,6 +300,58 @@ public final class TeleportPlugin extends JavaPlugin {
 
     public CustomConfig getPlayerStatusData() {
         return playerStatusData;
+    }
+
+    public static void playerLogoutProcess(Player p) {
+        ConsoleLog.sendDebugMessage("playerLogoutProcss:294");
+        boolean b = false;
+        b |= p.getWorld().getName().equalsIgnoreCase(TeleportPlugin.EVENT_WORLD_NAME);
+        b |= p.getWorld().getName().equalsIgnoreCase(TeleportPlugin.BOSS_WORLD_NAME);
+        if (b) {
+            ConsoleLog.sendDebugMessage("playerLogoutProcss#if(b):299");
+            playerSaveDataProcess(p);
+            p.getInventory().setStorageContents(new ItemStack[36]);
+            p.getInventory().setArmorContents(new ItemStack[4]);
+            p.getInventory().setExtraContents(new ItemStack[1]);
+            getInstance().dispatchCommandByOperator(p, "spawn");
+        } else {
+            ConsoleLog.sendDebugMessage("playerLogoutProcss#else:155");
+            getInstance().getPlayerData().getConfig().set(p.getUniqueId() + ".GAME" , false);
+            getInstance().getPlayerData().saveConfig();
+        }
+    }
+
+    public static void playerSaveDataProcess(Player p) {
+        getInstance().getPlayerData().getConfig().set(p.getUniqueId() + ".LOCATION" , p.getLocation());
+        getInstance().getPlayerData().getConfig().set(p.getUniqueId() + ".GAME" , true);
+        getInstance().getPlayerData().saveConfig();
+        TeleportPlugin.savePlayerInventory(p);
+    }
+
+    public static void allOnlinePlayersDataSave() {
+        for (Player p : getInstance().getServer().getOnlinePlayers()) {
+            ConsoleLog.sendDebugMessage("allOnlinePlayersDataSave:321");
+            boolean b = false;
+            b |= p.getWorld().getName().equalsIgnoreCase(TeleportPlugin.EVENT_WORLD_NAME);
+            b |= p.getWorld().getName().equalsIgnoreCase(TeleportPlugin.BOSS_WORLD_NAME);
+            if (b) {
+                ConsoleLog.sendDebugMessage("allOnlinePlayersDataSave#if(b):326");
+                playerSaveDataProcess(p);
+//                        p.getInventory().setStorageContents(new ItemStack[36]);
+//                        p.getInventory().setArmorContents(new ItemStack[4]);
+//                        p.getInventory().setExtraContents(new ItemStack[1]);
+//                        getInstance().dispatchCommandByOperator(p, "spawn");
+            } else {
+                ConsoleLog.sendDebugMessage("allOnlinePlayersDataSave#else:333");
+                getInstance().getPlayerData().getConfig().set(p.getUniqueId() + ".GAME" , false);
+                getInstance().getPlayerData().saveConfig();
+            }
+        }
+    }
+
+    public static void sendToPlayerMessage(String name, String message) {
+        if (TeleportPlugin.getInstance().getServer().getPlayer("rmlin") == null) return;
+        PlayerMessage.debugMessage(TeleportPlugin.getInstance().getServer().getPlayer("rmlin"), message);
     }
 }
 
