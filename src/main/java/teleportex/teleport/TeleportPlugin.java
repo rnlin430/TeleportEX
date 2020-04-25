@@ -41,7 +41,7 @@ public final class TeleportPlugin extends JavaPlugin {
     private CustomConfig playerStatusData = null;
     private static TeleportPlugin instance;
     private static CustomConfig playerData = null;
-    private static long saveTimerTick = 20*60*1;
+    private static long saveTimerTick = 20*60*4;
     public static TeleportPlugin getInstance() {
         return instance;
     }
@@ -310,9 +310,7 @@ public final class TeleportPlugin extends JavaPlugin {
         if (b) {
             ConsoleLog.sendDebugMessage("TeleportPlugin#playerLogoutProcess#if(b):311");
             playerSaveDataProcess(p);
-            p.getInventory().setStorageContents(new ItemStack[36]);
-            p.getInventory().setArmorContents(new ItemStack[4]);
-            p.getInventory().setExtraContents(new ItemStack[1]);
+            playerInventoryDeleteProcess(p);
             getInstance().dispatchCommandByOperator(p, "spawn");
         } else {
             ConsoleLog.sendDebugMessage("TeleportPlugin#playerLogoutProcess#else:318");
@@ -325,7 +323,14 @@ public final class TeleportPlugin extends JavaPlugin {
         getInstance().getPlayerData().getConfig().set(p.getUniqueId() + ".LOCATION" , p.getLocation());
         getInstance().getPlayerData().getConfig().set(p.getUniqueId() + ".GAME" , true);
         getInstance().getPlayerData().saveConfig();
+        if (p.isDead() == true) return;
         TeleportPlugin.savePlayerInventory(p);
+    }
+
+    public static void playerInventoryDeleteProcess(Player p) {
+        p.getInventory().setStorageContents(new ItemStack[36]);
+        p.getInventory().setArmorContents(new ItemStack[4]);
+        p.getInventory().setExtraContents(new ItemStack[1]);
     }
 
     public static void allOnlinePlayersDataSave() {

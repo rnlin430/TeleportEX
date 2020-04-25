@@ -18,21 +18,21 @@ public class ConsoleLog {
     private static boolean enableMessage = false;
 
     public static void writeLine(@Nullable String text) {
-        if (!enableMessage) return;
+        //if (!enableMessage) return;
         System.out.println(pluginName + end + text + end); }
 
     public static void sendCaution(@Nullable String text) {
-        if (!enableMessage) return;
+        //if (!enableMessage) return;
         System.out.println("[" + pluginName + ":Caution] " + yellow + text + end);
     }
 
     public static void sendWarning(@Nullable String text) {
-        if (!enableMessage) return;
+        //if (!enableMessage) return;
         System.out.println("[" + pluginName + ":Warming] " + red + text + end);
     }
 
     public static void sendDescription(@Nullable String text) {
-        if (!enableMessage) return;
+        //if (!enableMessage) return;
         System.out.println("[" + pluginName + ":info] " + cyan + text + end);
     }
 

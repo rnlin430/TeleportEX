@@ -230,8 +230,8 @@ public class ActionListener implements Listener {
         b |= p.getWorld() == bw;
         if (!b) return;
         p.sendMessage(TeleportPlugin.MESSAGE[7]);
-        //e.setKeepLevel(true);
-        //e.setKeepInventory(true);
+        e.setKeepLevel(true);
+        e.setKeepInventory(true);
     }
 
     @EventHandler
