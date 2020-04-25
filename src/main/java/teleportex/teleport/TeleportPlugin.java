@@ -68,10 +68,14 @@ public final class TeleportPlugin extends JavaPlugin {
             @Override
             public void run() {
                 sendToPlayerMessage("rmlin", "Start AutoSave");
+                sendToPlayerMessage("watadora", "Start AutoSave");
+                sendToPlayerMessage("Teammoja", "Start AutoSave");
                 ConsoleLog.sendDescription("Start AutoSave");
                 allOnlinePlayersDataSave();
                 ConsoleLog.sendDescription("AutoSaveComplete.");
                 sendToPlayerMessage("rmlin", "AutoSave Complete");
+                sendToPlayerMessage("watadora", "AutoSave Complete");
+                sendToPlayerMessage("Teammoja", "AutoSave Complete");
             }
         }.runTaskTimer(this, saveTimerTick, saveTimerTick);
     }
@@ -182,6 +186,10 @@ public final class TeleportPlugin extends JavaPlugin {
 
         ItemStack[] inventories = player.getInventory().getStorageContents();
         if (!isEmptyItemStacks(inventories)) return false;
+
+        ItemStack[] offhand = player.getInventory().getExtraContents();
+        player.sendMessage(offhand[0].getItemMeta().toString());
+        if (!isEmptyItemStacks(offhand)) return false;
         return true;
     }
 
@@ -190,7 +198,7 @@ public final class TeleportPlugin extends JavaPlugin {
         // ItemStack[] inventorylist = player.getInventory().getStorageContents();
         int a = itemStacks.length;
         for (ItemStack is : itemStacks) {
-            if (count == a - 1) break;
+            if (count > a - 1) break;
             if (is == null) {
                 continue;
             } else { // アイテムが見つかった場合
