@@ -15,7 +15,7 @@ public class ConsoleLog {
     static final String end    = "\u001b[00m";
 
     private static String pluginName = null;
-    private static boolean enableMessage = true;
+    private static boolean enableMessage = false;
 
     public static void writeLine(@Nullable String text) {
         if (!enableMessage) return;
