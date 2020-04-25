@@ -303,19 +303,19 @@ public final class TeleportPlugin extends JavaPlugin {
     }
 
     public static void playerLogoutProcess(Player p) {
-        ConsoleLog.sendDebugMessage("playerLogoutProcss:294");
+        ConsoleLog.sendDebugMessage("TeleportPlugin#playerLogoutProcess:306");
         boolean b = false;
         b |= p.getWorld().getName().equalsIgnoreCase(TeleportPlugin.EVENT_WORLD_NAME);
         b |= p.getWorld().getName().equalsIgnoreCase(TeleportPlugin.BOSS_WORLD_NAME);
         if (b) {
-            ConsoleLog.sendDebugMessage("playerLogoutProcss#if(b):299");
+            ConsoleLog.sendDebugMessage("TeleportPlugin#playerLogoutProcess#if(b):311");
             playerSaveDataProcess(p);
             p.getInventory().setStorageContents(new ItemStack[36]);
             p.getInventory().setArmorContents(new ItemStack[4]);
             p.getInventory().setExtraContents(new ItemStack[1]);
             getInstance().dispatchCommandByOperator(p, "spawn");
         } else {
-            ConsoleLog.sendDebugMessage("playerLogoutProcss#else:155");
+            ConsoleLog.sendDebugMessage("TeleportPlugin#playerLogoutProcess#else:318");
             getInstance().getPlayerData().getConfig().set(p.getUniqueId() + ".GAME" , false);
             getInstance().getPlayerData().saveConfig();
         }
@@ -330,7 +330,7 @@ public final class TeleportPlugin extends JavaPlugin {
 
     public static void allOnlinePlayersDataSave() {
         for (Player p : getInstance().getServer().getOnlinePlayers()) {
-            ConsoleLog.sendDebugMessage("allOnlinePlayersDataSave:321");
+            ConsoleLog.sendDebugMessage("TeleportPlugin#allOnlinePlayersDataSave:333");
             boolean b = false;
             b |= p.getWorld().getName().equalsIgnoreCase(TeleportPlugin.EVENT_WORLD_NAME);
             b |= p.getWorld().getName().equalsIgnoreCase(TeleportPlugin.BOSS_WORLD_NAME);
