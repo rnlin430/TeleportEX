@@ -188,7 +188,6 @@ public final class TeleportPlugin extends JavaPlugin {
         if (!isEmptyItemStacks(inventories)) return false;
 
         ItemStack[] offhand = player.getInventory().getExtraContents();
-        player.sendMessage(offhand[0].getItemMeta().toString());
         if (!isEmptyItemStacks(offhand)) return false;
         return true;
     }
