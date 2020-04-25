@@ -6,7 +6,7 @@ apply plugin: 'idea'
 group = pluginGroup
 version = pluginVersion
 
-def pluginsPath = "G:\\minecraftserver\\EventServer1.13.2\\plugins"
+def pluginsPath = "G:\\minecraftserver\\Spigot1.15.2\\plugins"
 
 task showVersion {
     doLast {
