@@ -16,7 +16,6 @@ import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.PluginEnableEvent;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 import java.util.function.Function;
@@ -118,6 +117,7 @@ public class ActionListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(PlayerRespawnEvent e) throws IllegalArgumentException {
+        ConsoleLog.sendDebugMessage("onPlayerRespawn");
         World ew = Objects.requireNonNull(
                 plugin.getServer().getWorld(TeleportPlugin.EVENT_WORLD_NAME), "onPlayerRespawn" + WORLD_ERROR_MESSAGE);
         World bw = Objects.requireNonNull(
@@ -232,6 +232,7 @@ public class ActionListener implements Listener {
         p.sendMessage(TeleportPlugin.MESSAGE[7]);
         e.setKeepLevel(true);
         e.setKeepInventory(true);
+        p.spigot().respawn();
     }
 
     @EventHandler
@@ -272,6 +273,7 @@ public class ActionListener implements Listener {
 
     @EventHandler
     public void onPlayerLogin(PlayerJoinEvent e) {
+        ConsoleLog.sendDebugMessage("onPlayerLogin");
         Player p = e.getPlayer();
         World w = plugin.getServer().getWorld(TeleportPlugin.EVENT_WORLD_NAME);
         plugin.getPlayerData().reloadConfig();
@@ -288,7 +290,7 @@ public class ActionListener implements Listener {
                 if (p.teleport(loc)) {
                     TeleportPlugin.restorePlayerInventory(p);
                 } else {
-                    ConsoleLog.sendWarning(p.getName() + "の転送に失敗しました。");
+                    ConsoleLog.sendWarning(p.getName() + "の転送に失敗した、あるいはプレイヤーが死んでいる可能性があります。");
                 }
 
             } else {

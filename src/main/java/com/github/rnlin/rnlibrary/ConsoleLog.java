@@ -1,6 +1,5 @@
 package com.github.rnlin.rnlibrary;
 
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,7 +14,7 @@ public class ConsoleLog {
     static final String end    = "\u001b[00m";
 
     private static String pluginName = null;
-    private static boolean enableMessage = false;
+    private static boolean enableDebugMessage = false;
 
     public static void writeLine(@Nullable String text) {
         //if (!enableMessage) return;
@@ -37,12 +36,16 @@ public class ConsoleLog {
     }
 
     public static void sendDebugMessage(@Nullable String text) {
-        if (!enableMessage) return;
+        if (!enableDebugMessage) return;
         System.out.println("[" + pluginName + ":Debug] " + pink + text + end);
     }
 
     public static void setPluginName(String name) {
         pluginName = name;
+    }
+
+    public static void setEnableDebugMessage(boolean b) {
+        enableDebugMessage = b;
     }
 
     @NotNull
