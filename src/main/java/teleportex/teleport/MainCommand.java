@@ -1,5 +1,6 @@
 package teleportex.teleport;
 
+import com.github.rnlin.rnlibrary.ConsoleLog;
 import org.bukkit.*;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
@@ -85,8 +86,11 @@ public class MainCommand implements CommandExecutor {
 
         // debugコマンド
         if (cmd.getName().equalsIgnoreCase(TeleportPlugin.COMMANDS[4])) {
-            Player p = (Player) sender;
-            TeleportPlugin.savePlayerInventory(p);
+//            Player p = (Player) sender;
+//            TeleportPlugin.savePlayerInventory(p);
+            boolean b = false;
+            if (args[0] == "true") { b = true; }
+            ConsoleLog.setEnableDebugMessage(b);
             return true;
         }
 

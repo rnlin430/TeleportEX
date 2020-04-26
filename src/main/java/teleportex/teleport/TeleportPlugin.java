@@ -5,7 +5,6 @@ import com.github.rnlin.rnlibrary.CustomConfig;
 import com.github.rnlin.rnlibrary.PlayerMessage;
 import com.github.rnlin.rnlibrary.PlayersData;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -16,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 
 public final class TeleportPlugin extends JavaPlugin {
 
@@ -72,7 +70,7 @@ public final class TeleportPlugin extends JavaPlugin {
                 sendToPlayerMessage("Teammoja", "Start AutoSave");
                 ConsoleLog.sendDescription("Start AutoSave");
                 allOnlinePlayersDataSave();
-                ConsoleLog.sendDescription("AutoSaveComplete.");
+                ConsoleLog.sendDescription("AutoSaveComplete");
                 sendToPlayerMessage("rmlin", "AutoSave Complete");
                 sendToPlayerMessage("watadora", "AutoSave Complete");
                 sendToPlayerMessage("Teammoja", "AutoSave Complete");
@@ -277,12 +275,14 @@ public final class TeleportPlugin extends JavaPlugin {
         String errormsg = p.getPlayerListName() + "の装備アイテムデータが見つかりませんでした。";
         if (inst.getInventoryData().getConfig().getConfigurationSection(uuid) == null) {
             sendToPlayerMessage("rmlin", p.getName() + YML_FILE_NAMES[1] + ":" + errormsg);
+        } else {
+            for (String slotnum : Objects.requireNonNull(
+                    inst.getInventoryData().getConfig().getConfigurationSection(uuid), YML_FILE_NAMES[1] + ":" +  errormsg).getKeys(false)) {
+                ItemStack is = inst.getInventoryData().getConfig().getItemStack(uuid + "." + slotnum);
+                items[Integer.valueOf(slotnum)] = is;
+            }
         }
-        for (String slotnum : Objects.requireNonNull(
-                inst.getInventoryData().getConfig().getConfigurationSection(uuid), YML_FILE_NAMES[1] + ":" +  errormsg).getKeys(false)) {
-            ItemStack is = inst.getInventoryData().getConfig().getItemStack(uuid + "." + slotnum);
-            items[Integer.valueOf(slotnum)] = is;
-        }
+
 
         p.getInventory().setStorageContents(items);
 
@@ -291,16 +291,18 @@ public final class TeleportPlugin extends JavaPlugin {
         inst.getInventoryData().reloadConfig();
         if (inst.getArmorData().getConfig().getConfigurationSection(uuid) == null) {
             sendToPlayerMessage("rmlin", p.getName() + YML_FILE_NAMES[2] + ":" + errormsg);
-        }
-        for (String slotnum : Objects.requireNonNull(
-                inst.getArmorData().getConfig().getConfigurationSection(uuid), YML_FILE_NAMES[2] + ":" + errormsg).getKeys(false)) {
-            if (slotnum.equalsIgnoreCase("offhand")) {
-                offhand[0] = inst.getArmorData().getConfig().getItemStack(uuid + "." + slotnum);
-                continue;
+        } else {
+            for (String slotnum : Objects.requireNonNull(
+                    inst.getArmorData().getConfig().getConfigurationSection(uuid), YML_FILE_NAMES[2] + ":" + errormsg).getKeys(false)) {
+                if (slotnum.equalsIgnoreCase("offhand")) {
+                    offhand[0] = inst.getArmorData().getConfig().getItemStack(uuid + "." + slotnum);
+                    continue;
+                }
+                ItemStack is = inst.getArmorData().getConfig().getItemStack(uuid + "." + slotnum);
+                items[Integer.valueOf(slotnum)] = is;
             }
-            ItemStack is = inst.getArmorData().getConfig().getItemStack(uuid + "." + slotnum);
-            items[Integer.valueOf(slotnum)] = is;
         }
+
         p.getInventory().setArmorContents(items);
         p.getInventory().setExtraContents(offhand);
     }
