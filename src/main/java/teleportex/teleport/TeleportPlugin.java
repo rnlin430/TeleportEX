@@ -283,7 +283,6 @@ public final class TeleportPlugin extends JavaPlugin {
             }
         }
 
-
         p.getInventory().setStorageContents(items);
 
         items = new ItemStack[4];
@@ -364,8 +363,8 @@ public final class TeleportPlugin extends JavaPlugin {
     }
 
     public static void sendToPlayerMessage(String name, String message) {
-        if (TeleportPlugin.getInstance().getServer().getPlayer("rmlin") == null) return;
-        PlayerMessage.debugMessage(TeleportPlugin.getInstance().getServer().getPlayer("rmlin"), message);
+        if (TeleportPlugin.getInstance().getServer().getPlayer(name) == null) return;
+        PlayerMessage.debugMessage(TeleportPlugin.getInstance().getServer().getPlayer(name), message);
     }
 }
 

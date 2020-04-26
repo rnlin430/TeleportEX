@@ -232,7 +232,6 @@ public class ActionListener implements Listener {
         p.sendMessage(TeleportPlugin.MESSAGE[7]);
         e.setKeepLevel(true);
         e.setKeepInventory(true);
-        p.spigot().respawn();
     }
 
     @EventHandler
@@ -282,15 +281,20 @@ public class ActionListener implements Listener {
         if (!cf.contains(p.getUniqueId() + ".LOCATION")) return;
         ConsoleLog.sendDebugMessage("onPlayerLogin#if(!cf.contains...):231");
         if (cf.getBoolean(p.getUniqueId() + ".GAME")) {
-//            System.out.println("####" + cf.get(p.getUniqueId() + ".LOCATION"));
-//            System.out.println("getClass().getName()" + cf.get(p.getUniqueId() + ".LOCATION").getClass().getName());
             Object obj = cf.get(p.getUniqueId() + ".LOCATION");
             if (obj.getClass().getName().equalsIgnoreCase("org.bukkit.Location")) {
                 Location loc = (Location) obj;
                 if (p.teleport(loc)) {
                     TeleportPlugin.restorePlayerInventory(p);
                 } else {
-                    ConsoleLog.sendWarning(p.getName() + "の転送に失敗した、あるいはプレイヤーが死んでいる可能性があります。");
+                    ConsoleLog.sendWarning(p.getName() + " は死亡しています。転送できないためリスポーン地点にワープします。");
+                    p.spigot().respawn();
+                    if (p.getWorld().getName().equalsIgnoreCase(TeleportPlugin.EVENT_WORLD_NAME) || p.getWorld().getName().equalsIgnoreCase(TeleportPlugin.BOSS_WORLD_NAME)) {
+                        TeleportPlugin.restorePlayerInventory(p);
+                    } else {
+                        ConsoleLog.sendWarning(p.getName() + " のリスポーン地点へのワープを試みましたがイベントワールドが見つからなかったため失敗しました。");
+                    }
+
                 }
 
             } else {

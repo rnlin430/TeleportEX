@@ -27,7 +27,7 @@ public class ConsoleLog {
 
     public static void sendWarning(@Nullable String text) {
         //if (!enableMessage) return;
-        System.out.println("[" + pluginName + ":Warming] " + red + text + end);
+        System.out.println("[" + pluginName + ":Warming] " + yellow + text + end);
     }
 
     public static void sendDescription(@Nullable String text) {
