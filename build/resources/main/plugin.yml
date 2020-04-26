@@ -1,5 +1,5 @@
 name: TeleportEX
-version: 1.0.1-SNAPSHOT
+version: 1.0.5-SNAPSHOT
 main: teleportex.teleport.TeleportPlugin
 api-version: 1.13
 author: rnlin
