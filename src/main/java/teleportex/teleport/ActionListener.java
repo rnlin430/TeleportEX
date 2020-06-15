@@ -311,7 +311,6 @@ public class ActionListener implements Listener {
         }
     }
 
-//    @SuppressWarnings("unchecked")
 //    public static <T> T autoCast(Object obj) {
 //        T castObj = (T) obj;
 //        return castObj;
@@ -372,7 +371,7 @@ public class ActionListener implements Listener {
             );
             warpRegionMap.put(
                     WARP_REGION_NAMES[1],
-                    new Region(14993, 61D, -14993D, 14997D, 58D, -14989D, Bukkit.getWorld(TeleportPlugin.SURVIVAL_WORLD_NAME))
+                    new Region(14993D, 61D, -14993D, 14997D, 58D, -14989D, Bukkit.getWorld(TeleportPlugin.SURVIVAL_WORLD_NAME))
             );
         } else {
             throw new NullPointerException("[" + TeleportPlugin.SURVIVAL_WORLD_NAME + "] が見つからなかったため領域を一部作成できませんでした。");

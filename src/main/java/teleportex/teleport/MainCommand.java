@@ -132,7 +132,7 @@ public class MainCommand implements CommandExecutor {
             ItemStack is = p.getInventory().getItemInMainHand();
             ItemMeta im = is.getItemMeta();
             if (im == null) {
-                p.sendMessage("§4何もアイテムを持っていません。\n説明をつけたいアイテムを選んで");
+                p.sendMessage("§4何もアイテムを持っていません。\n説明をつけたいアイテムを選んでください。");
                 return true;
             }
             im.setLore(list);
@@ -296,13 +296,12 @@ public class MainCommand implements CommandExecutor {
     }
 
     private boolean checkPermission(Command command, CommandSender sender, String permission) {
-        if (!sender.hasPermission("extp.command.regitem")) {
+        if (!sender.hasPermission(permission)) {
             sender.sendMessage(ChatColor.DARK_RED + command.getPermissionMessage());
             return false;
         }
         return true;
     }
-
 
     public static void Broadcast(String message) {
         Bukkit.getServer().broadcastMessage(message);
