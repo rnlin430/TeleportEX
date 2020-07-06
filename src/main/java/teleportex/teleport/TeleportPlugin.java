@@ -12,9 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public final class TeleportPlugin extends JavaPlugin {
 
@@ -40,6 +38,7 @@ public final class TeleportPlugin extends JavaPlugin {
     private static TeleportPlugin instance;
     private static CustomConfig playerData = null;
     private static long saveTimerTick = 20*60*4;
+
     public static TeleportPlugin getInstance() {
         return instance;
     }
@@ -65,15 +64,21 @@ public final class TeleportPlugin extends JavaPlugin {
         new BukkitRunnable() {
             @Override
             public void run() {
-                sendToPlayerMessage("rmlin", "Start AutoSave");
-                sendToPlayerMessage("watadora", "Start AutoSave");
-                sendToPlayerMessage("Teammoja", "Start AutoSave");
-                ConsoleLog.sendDescription("Start AutoSave");
+                List<String> pnL = new ArrayList<>();
+                final String START_MESSAGE = "Start AutoSave";
+                final String COMPLETE_MESSAGE = "AutoSave Complete";
+                for (Player p : TeleportPlugin.getInstance().getServer().getOnlinePlayers()) {
+                    if (!p.isOp()) continue;
+                    String name = p.getName();
+                    pnL.add(name);
+                    sendToPlayerMessage(name, START_MESSAGE);
+                }
+                ConsoleLog.sendDescription(START_MESSAGE);
                 allOnlinePlayersDataSave();
-                ConsoleLog.sendDescription("AutoSaveComplete");
-                sendToPlayerMessage("rmlin", "AutoSave Complete");
-                sendToPlayerMessage("watadora", "AutoSave Complete");
-                sendToPlayerMessage("Teammoja", "AutoSave Complete");
+                ConsoleLog.sendDescription(COMPLETE_MESSAGE);
+                for (String n : pnL) {
+                    sendToPlayerMessage(n, COMPLETE_MESSAGE);
+                }
             }
         }.runTaskTimer(this, saveTimerTick, saveTimerTick);
     }
